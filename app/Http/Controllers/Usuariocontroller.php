@@ -15,6 +15,10 @@ class Usuariocontroller extends Controller
     public function index()
     {
         //
+        $roles = Role::all();
+        $usuarios = User::with('role')->get();
+
+        return view('admin.usuarios.listausuarios', compact('roles', 'usuarios'));
     }
 
     /**
@@ -71,7 +75,14 @@ class Usuariocontroller extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $usuario = User::findOrFail($id);
+        $usuario->name = $request->input('name');
+        $usuario->email = $request->input('email');
+        $usuario->role_id = $request->input('role');
+        $usuario->estado = $request->input('estado');
+        $usuario->save();
+
+        return back()->with('success', 'Usuario actualizado exitosamente');
     }
 
     /**
@@ -79,6 +90,8 @@ class Usuariocontroller extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $usuario = User::findOrFail($id);
+        $usuario->delete();
+        return back()->with('success', 'Usuario eliminado exitosamente');
     }
 }
